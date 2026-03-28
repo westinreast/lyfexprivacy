@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - LyfeX</title>
+    <style>
+        :root {
+            --bg: #0f1117;
+            --surface: #1a1c24;
+            --surface-high: #252833;
+            --text: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent: #6366f1;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #334155;
+        }
+        
+        h1 {
+            color: white;
+            font-size: 2.2rem;
+            margin: 0 0 10px 0;
+        }
+        
+        .last-updated {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        h2 {
+            color: white;
+            font-size: 1.5rem;
+            margin-top: 40px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+        }
+        
+        h3 {
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-top: 30px;
+        }
+        
+        p, li {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+        
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .section {
+            background: var(--surface);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #334155;
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            body { background: var(--bg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>LyfeX Privacy Policy</h1>
+        <p class="last-updated">Last updated: March 28, 2026</p>
+    </div>
+
+    <div class="section">
+        <h2>1. Introduction</h2>
+        <p>LyfeX is a local-first health tracking application. Your data is stored locally on your device by default.</p>
+    </div>
+
+    <div class="section">
+        <h2>2. Information We Collect</h2>
+        <h3>Local Data</h3>
+        <p>When using LyfeX, the following data is stored locally on your device:</p>
+        <ul>
+            <li>Food logs and nutrition tracking</li>
+            <li>Training history and workout data</li>
+            <li>Body measurements and sleep data</li>
+            <li>Health metrics (HRV, readiness, etc.)</li>
+        </ul>
+
+        <h3>AI Features</h3>
+        <p>When using AI features (food estimation, coaching, program generation), your health context is sent to AI providers (Google Gemini, OpenAI, xAI, or DeepSeek). This includes:</p>
+        <ul>
+            <li>Recent food logs</li>
+            <li>Training history</li>
+            <li>Body metrics and profile goals</li>
+        </ul>
+        <p>You can bring your own API keys or avoid AI features entirely.</p>
+    </div>
+
+    <div class="section">
+        <h2>3. Cloud Features (Optional)</h2>
+        <p>If you enable cloud features:</p>
+        <ul>
+            <li>Supabase: Your database can sync to private cloud storage</li>
+            <li>Backups: WebDAV, Google Drive, or Supabase Storage (encrypted)</li>
+        </ul>
+        <p>You can disable all cloud features and remain fully local.</p>
+    </div>
+
+    <div class="section">
+        <h2>4. Data Retention</h2>
+        <p>Your local data remains on your device until you delete it. We do not have access to your local data.</p>
+    </div>
+
+    <div class="section">
+        <h2>5. Your Rights</h2>
+        <p>You can:</p>
+        <ul>
+            <li>Export your data at any time</li>
+            <li>Delete your account and all data</li>
+            <li>Disable AI features</li>
+            <li>Disable cloud sync</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        <p>Vitalshield Solutions LLC</p>
+        <p><a href="mailto:westinreast@gmail.com">westinreast@gmail.com</a></p>
+        <p>This policy was last updated on March 28, 2026.</p>
+    </div>
+</body>
+</html>
