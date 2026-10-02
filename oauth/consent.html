@@ -1,0 +1,107 @@
+<!doctype html>
+<!-- LyfeX OAuth consent page (roadmap B74, architect/claude-connector-v1.md).
+     Supabase Auth's OAuth 2.1 server redirects here with ?authorization_id=…;
+     the user signs in to LyfeX, sees which app is asking, and approves or denies.
+     Published to GitHub Pages; the key below is the project's PUBLISHABLE key
+     (public by design — every query is still bound by RLS). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connect to LyfeX</title>
+<style>
+  :root { --bg:#0b0714; --card:#160f24; --text:#f3eefc; --muted:#a99cc4; --line:#2c2142; --accent:#9b5cff; --ok:#59e3b0; --warn:#ffb86b; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px;
+         background:var(--bg); color:var(--text); font:16px/1.45 -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .card { width:100%; max-width:420px; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px; }
+  .mark { font:700 28px Georgia, serif; text-align:center; margin-bottom:4px; }
+  h1 { font-size:20px; margin:8px 0 4px; text-align:center; }
+  p { color:var(--muted); margin:8px 0; }
+  ul { color:var(--muted); padding-left:20px; margin:8px 0 16px; }
+  label { display:block; font-size:14px; color:var(--muted); margin:12px 0 4px; }
+  input { width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); background:#0f0a1a; color:var(--text); font-size:16px; }
+  button { width:100%; padding:13px; border-radius:999px; border:0; font-size:16px; font-weight:600; margin-top:14px; cursor:pointer; }
+  .primary { background:var(--accent); color:#fff; }
+  .ghost { background:transparent; color:var(--muted); border:1px solid var(--line); }
+  .err { color:var(--warn); font-size:14px; min-height:20px; margin-top:10px; }
+  .app { color:var(--text); font-weight:600; }
+  .hide { display:none; }
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="mark">X</div>
+  <section id="loading"><p style="text-align:center">Loading…</p></section>
+
+  <section id="signin" class="hide">
+    <h1>Sign in to LyfeX</h1>
+    <p>Use the same email and password as the app.</p>
+    <form id="signin-form">
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button class="primary" type="submit">Sign in</button>
+    </form>
+  </section>
+
+  <section id="consent" class="hide">
+    <h1><span id="client" class="app">An app</span> wants to connect to LyfeX</h1>
+    <p>Signed in as <span id="who" class="app"></span>. If you allow it, it can:</p>
+    <ul>
+      <li>Read your workouts, program, readiness, WHOOP recovery, sleep, activity, food, body, labs and coach memory</li>
+      <li>Never see genetic data — that stays on your phone</li>
+    </ul>
+    <p>You can disconnect it any time from the app that connected.</p>
+    <button id="approve" class="primary">Allow</button>
+    <button id="deny" class="ghost">Deny</button>
+  </section>
+
+  <section id="done" class="hide"><p style="text-align:center">Done — returning you to the app…</p></section>
+  <div id="err" class="err"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://xllngtlxdyzkobowvmjr.supabase.co";
+  const PUBLISHABLE_KEY = "sb_publishable_vPLJVcC2GqGZnlOrGCZa_g_uxy2A84c";
+  const sb = supabase.createClient(SUPABASE_URL, PUBLISHABLE_KEY);
+  const authId = new URLSearchParams(location.search).get("authorization_id");
+  const $ = (id) => document.getElementById(id);
+  const show = (id) => ["loading", "signin", "consent", "done"].forEach((s) => $(s).classList.toggle("hide", s !== id));
+  const fail = (m) => { $("err").textContent = m; };
+
+  async function load() {
+    if (!authId) { show("loading"); fail("This page is opened by an app that is connecting to LyfeX."); return; }
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { show("signin"); return; }
+    const { data, error } = await sb.auth.oauth.getAuthorizationDetails(authId);
+    if (error) { show("loading"); fail(error.message); return; }
+    if (data && !("authorization_id" in data) && data.redirect_url) { show("done"); location.href = data.redirect_url; return; }
+    $("client").textContent = (data.client && (data.client.client_name || data.client.name)) || "An app";
+    $("who").textContent = session.user.email;
+    show("consent");
+  }
+
+  $("signin-form").addEventListener("submit", async (e) => {
+    e.preventDefault(); fail("");
+    const { error } = await sb.auth.signInWithPassword({ email: $("email").value.trim(), password: $("password").value });
+    if (error) { fail(error.message); return; }
+    load();
+  });
+
+  async function decide(approve) {
+    fail("");
+    const fn = approve ? sb.auth.oauth.approveAuthorization : sb.auth.oauth.denyAuthorization;
+    const { data, error } = await fn.call(sb.auth.oauth, authId);
+    if (error) { fail(error.message); return; }
+    show("done");
+    location.href = data.redirect_url;
+  }
+  $("approve").addEventListener("click", () => decide(true));
+  $("deny").addEventListener("click", () => decide(false));
+  load();
+</script>
+</body>
+</html>
